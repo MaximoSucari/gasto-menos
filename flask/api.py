@@ -1,36 +1,29 @@
 import env
 import requests
+from utils.messages import process_text
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
-PORT = 3000
+PORT = 5000
 
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    try:
-        data = request.json
-        print(data)  # print all response
+    data = request.json
 
-        message_from = data["data"]["from"]  # sender number
-        message_msg = data["data"]["body"]  # Message text
-        print(data)
+    message_from = data["data"]["from"]
+    message_msg = data["data"]["body"]
 
-        # Assuming you want to call the replyMessage function here
-        reply_message(data)
+    expense = process_text(message_msg)
 
-        return jsonify(success=True), 200
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        return jsonify(success=False, error=str(e)), 500
+    return jsonify(success=True, data=expense)
 
 
 @app.route("/")
 def home():
     print("hola loko")
-    # Assuming you want to call the replyMessage function here
     reply_message(request.json)
-    return jsonify(success=True), 200
+    return jsonify(success=True)
 
 
 def reply_message(input_data):

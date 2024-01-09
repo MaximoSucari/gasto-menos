@@ -1,0 +1,1 @@
+wget --header="Content-Type: application/json" --post-data '{"data": {"from": "1126603201", "body": "6k cafe con colo"}}' http://localhost:5000/webhook
