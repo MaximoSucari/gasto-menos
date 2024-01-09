@@ -35,15 +35,18 @@ const replyMessage = async (input) => {
     const data = {
       "messaging_product": "whatsapp",
       "to": "541154933738",
-      "type": "text",
-      "text": {
-        "body": "hello_world"
+      "type": "template",
+      "template": {
+        "name": "hello_world",
+        "language": {
+          "code": "en_US"
+        }
       }
     };
     
     axios.post(url, data, { headers })
       .then(response => {
-        console.log('Respuesta:', response);
+        console.log('Respuesta:', response.data);
       })
       .catch(error => {
         console.error('Error:', error);
