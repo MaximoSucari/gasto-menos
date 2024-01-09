@@ -1,7 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
-const PORT = 80
+const PORT = 3000
 // Setup a webhook route
 
 app.use(bodyParser.json())
