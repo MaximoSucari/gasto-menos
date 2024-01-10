@@ -5,10 +5,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.decorators.http import require_http_methods
 
-from models import Expense
-from utils import process_text
+from .models import Expense
+from .utils import process_text
+from user.models import UserProfile
+from category.models import Category
+
 
 import json
+import datetime
 
 
 def expense_list(request):
@@ -21,19 +25,30 @@ def expense_list(request):
 @require_http_methods(["POST"])
 def webhook(request):
     try:
-        data = request.POST.get("data")  # Assuming you are sending data as form data
-        data = json.loads(
-            data
-        )  # If data is sent as JSON, you may need to parse it accordingly
+        data = json.loads(request.body.decode("utf-8"))
 
-        message_from = data["data"]["from"]
-        message_msg = data["data"]["body"]
+        phone = data["from"]
+        message = data["body"]
 
-        expense = process_text(message_msg)
+        expense = process_text(message)
+
+        user, _ = UserProfile.objects.get_or_create(phone=phone)
+        category = Category.objects.get(name=expense["category"])
+
+        Expense.objects.create(
+            user=user,
+            message=message,
+            amount=expense["amount"],
+            category=category,
+            currency=expense["currency"],
+            date=datetime.datetime.now(),
+        )
+
+        res = f"Created expense in {expense['category']} for {expense['amount']} {expense['currency']}"
 
         response_data = {
             "success": True,
-            "data": expense,
+            "response": res,
         }
         return JsonResponse(response_data)
     except Exception as e:

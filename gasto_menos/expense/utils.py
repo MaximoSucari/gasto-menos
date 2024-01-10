@@ -11,12 +11,12 @@ if os.path.exists(settings.CHROMA_PERSIST_DIR):
         persist_directory=settings.CHROMA_PERSIST_DIR, embedding_function=embedding
     )
 else:
-    raise Exception("Chroma does not exist on disk. Run create_chroma_db.py first.")
+    print("WARNING: Chroma does not exist on disk.")
 
 
 def get_category(text):
     results = smalldb.similarity_search(text, k=3)
-    return results[0].page_content
+    return results[0].metadata["category"]
 
 
 def get_amount(text):
@@ -41,4 +41,5 @@ def get_amount(text):
 def process_text(text):
     category = get_category(text)
     amount, currency = get_amount(text)
+
     return {"amount": amount, "currency": currency, "category": category}

@@ -15,7 +15,7 @@ class Command(BaseCommand):
         documents = []
 
         for category in Category.objects.all():
-            content = category.name + " " + category.keywords
+            content = category.name + " " + category.keywords if category.keywords else category.name
             documents.append(
                 Document(page_content=content, metadata={"category": category.name})
             )
