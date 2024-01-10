@@ -1,0 +1,60 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Caches
+*.sqlite3
+
+# Virtual environment
+venv/
+env/
+*.env
+
+# Development/production-specific settings
+*.local
+*.log
+db.sqlite3
+
+# Static files
+static/
+
+# Media files
+media/
+
+# IDE files
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.pycharm*
+*.idea/
+
+# Compiled Python bytecode
+__pycache__/
+
+# Local development settings
+.local/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Python env
+.python-version
+
+# Ignore pipenv virtual environment
+/.venv
+
+# Ignore pipfiles
+Pipfile
+Pipfile.lock
+
+# Ignore macOS folder attributes
+.AppleDouble
+.DS_Store?
+
+# Ignore Jupyter Notebooks
+*.ipynb_checkpoints/
+
+CategoriesDB
