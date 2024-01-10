@@ -16,9 +16,9 @@ app.post('/webhook', (req, res) => {
   res.status(200).end()
 });
 
-app.get('/', (req, res) => {
+app.get('/webhook', (req, res) => {
   
-    console.log('hola loko')
+    console.log('hola loko', req.body['data']['body'])
     replyMessage(req.body)
     res.status(200).end()
 })
