@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.decorators.http import require_http_methods
+from django.core.serializers.json import DjangoJSONEncoder
 
 from .models import Expense
 from .utils import process_text
@@ -15,9 +16,25 @@ import json
 import datetime
 
 
-def expense_list(request):
-    expenses = Expense.objects.all()
-    return render(request, "expense_list.html", {"expenses": expenses})
+def list(request):
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+        phone = data["from"]
+        user, _ = UserProfile.objects.get_or_create(phone=phone)
+
+        expenses = Expense.objects.filter(user=user).values(
+            "id", "amount", "currency", "message", "category__name", "date"
+        )
+        expenses = [dict(expense) for expense in expenses]
+
+        response_data = {
+            "success": True,
+            "response": expenses,
+        }
+
+        return JsonResponse(response_data)
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 
 @csrf_exempt  # This decorator is used to exempt the view from CSRF protection (for webhook endpoints)
@@ -26,7 +43,6 @@ def expense_list(request):
 def webhook(request):
     try:
         data = json.loads(request.body.decode("utf-8"))
-
         phone = data["from"]
         message = data["body"]
 
