@@ -32,8 +32,10 @@ def get_amount(text):
     elif match_usd:
         amount = float(match_usd.group(1)) if match_usd.group(1) else 0.0
         currency = "usd"
-    else:
-        return (0.0, "pesos")
+    else:        
+        number_match = re.search(r"(\d+\.?\d*)", text)
+        amount = float(number_match.group(1)) if number_match else 0.0
+        currency = "pesos"
 
     return (amount, currency)
 

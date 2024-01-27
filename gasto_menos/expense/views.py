@@ -43,8 +43,8 @@ def list(request):
 def webhook(request):
     try:
         data = json.loads(request.body.decode("utf-8"))
-        phone = data["from"]
-        message = data["body"]
+        phone = data["context"]["userData"]["variables"]["phone"]
+        message = data["context"]["message"]["MESSAGE"]
 
         expense = process_text(message)
 
@@ -60,16 +60,16 @@ def webhook(request):
             date=datetime.datetime.now(),
         )
 
-        res = f"Created expense in {expense['category']} for {expense['amount']} {expense['currency']}"
+        res = f"Gasto registrado en {expense['category']} por {expense['amount']} {expense['currency']}"
 
         response_data = {
             "success": True,
-            "response": res,
+            "text": res,
         }
-        return JsonResponse(response_data)
+        return JsonResponse({"res": response_data})
     except Exception as e:
         response_data = {
             "success": False,
             "error": str(e),
         }
-        return JsonResponse(response_data, status=500)
+        return JsonResponse({"res": response_data}, status=500)

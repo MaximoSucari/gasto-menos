@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
+import plotly.express as px  # interactive charts
 
 
 def fetch_data(phone_number):
@@ -17,30 +18,30 @@ def fetch_data(phone_number):
         st.error(f"Error: {e}")
         return None
 
+st.set_page_config(
+    page_title="Real-Time Data Science Dashboard",
+    page_icon="✅",
+    layout="wide",
+)
 
-def main():
-    st.title("Gastos por Categoría")
+st.title("Gastos por Categoría")
 
-    phone_number = "1126603201"
-    if phone_number:
-        result = fetch_data(phone_number)
-        data = result.get("response", {})
+phone_number = "1126603201"
+if phone_number:
+    result = fetch_data(phone_number)
+    data = result.get("response", {})
 
-        # Make two containers side-by-side
-        left_column, right_column = st.columns(2)
-
+    placeholder = st.empty()
+    left_column, right_column = st.columns(2)
+    with placeholder.container():
         with left_column:
             df = pd.DataFrame(data)
             df = df[["amount", "currency", "message", "category__name", "date"]]
-            st.data_editor(df, num_rows="dynamic")
-
+            df =st.data_editor(df, num_rows="dynamic")
+            
         with right_column:
             fig, ax = plt.subplots()
             df["category__name"].value_counts().plot(ax=ax, kind="pie")
             plt.title("Expenses by Category")
             plt.ylabel("")
             st.pyplot(fig)
-
-
-if __name__ == "__main__":
-    main()
