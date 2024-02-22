@@ -1,0 +1,4 @@
+CategoriesDB
+__pycache__
+*.txt
+.env
